@@ -1,0 +1,28 @@
+# Infraestrutura para desenvolvimento local. A API e o frontend rodam fora do
+# Docker (./mvnw spring-boot:run e npm run dev), para recarregar rapido.
+services:
+  postgres:
+    image: postgres:16.15-alpine
+    environment:
+      POSTGRES_DB: pedeja
+      POSTGRES_USER: pedeja
+      POSTGRES_PASSWORD: pedeja
+    # 5433 para nao disputar a porta com outro Postgres local.
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pedeja -d pedeja"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  postgres_data:

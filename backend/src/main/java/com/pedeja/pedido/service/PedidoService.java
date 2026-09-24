@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pedeja.cardapio.entity.ItemCardapio;
 import com.pedeja.cardapio.repository.ItemCardapioRepository;
+import com.pedeja.pagamento.entity.StatusPagamento;
+import com.pedeja.pagamento.exception.PagamentoEmAndamentoException;
+import com.pedeja.pagamento.repository.PagamentoRepository;
 import com.pedeja.pedido.dto.CriacaoPedidoRequest;
 import com.pedeja.pedido.dto.PedidoResponse;
 import com.pedeja.pedido.dto.PedidoResumoResponse;
@@ -38,6 +41,7 @@ public class PedidoService {
 	private final RestauranteRepository restauranteRepository;
 	private final ItemCardapioRepository itemCardapioRepository;
 	private final RestauranteService restauranteService;
+	private final PagamentoRepository pagamentoRepository;
 	private final Clock clock;
 
 	public PedidoService(
@@ -45,12 +49,14 @@ public class PedidoService {
 			RestauranteRepository restauranteRepository,
 			ItemCardapioRepository itemCardapioRepository,
 			RestauranteService restauranteService,
+			PagamentoRepository pagamentoRepository,
 			Clock clock
 	) {
 		this.pedidoRepository = pedidoRepository;
 		this.restauranteRepository = restauranteRepository;
 		this.itemCardapioRepository = itemCardapioRepository;
 		this.restauranteService = restauranteService;
+		this.pagamentoRepository = pagamentoRepository;
 		this.clock = clock;
 	}
 
@@ -132,10 +138,25 @@ public class PedidoService {
 				.orElseThrow(PedidoNaoEncontradoException::new);
 	}
 
+	/**
+	 * Com uma cobrança Pix válida em aberto, o cliente pode pagar a qualquer
+	 * momento, então o cancelamento espera ela ser paga, recusada ou vencer. A
+	 * linha do pedido fica travada durante a checagem, e o webhook trava a mesma
+	 * linha antes de confirmar o pagamento: os dois nunca decidem ao mesmo tempo.
+	 */
 	@Transactional
 	public PedidoResponse cancelarPeloCliente(Long clienteId, Long pedidoId) {
+		Instant agora = Instant.now(clock);
 		Pedido pedido = travarDoCliente(clienteId, pedidoId);
-		pedido.mudarStatus(StatusPedido.CANCELADO, Instant.now(clock));
+
+		boolean cobrancaEmAberto = pagamentoRepository.findByPedidoIdAndStatus(pedidoId, StatusPagamento.PENDENTE)
+				.filter(pagamento -> pagamento.aguardandoPagamento(agora))
+				.isPresent();
+		if (cobrancaEmAberto) {
+			throw new PagamentoEmAndamentoException();
+		}
+
+		pedido.mudarStatus(StatusPedido.CANCELADO, agora);
 		return PedidoResponse.from(pedido);
 	}
 

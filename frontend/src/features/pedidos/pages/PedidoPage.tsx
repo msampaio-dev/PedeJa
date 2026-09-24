@@ -1,13 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Topo } from '../../../components/Topo'
 import { ApiError } from '../../../services/api'
 import { formatarPreco } from '../../../shared/formatadores'
 import { useAuth } from '../../auth/context/useAuth'
+import { PagamentoPix } from '../../pagamento/PagamentoPix'
+import { type Pagamento, buscarPagamento } from '../../pagamento/pagamentoApi'
 import { buscarPedido, cancelarPedido } from '../pedidoApi'
 import { ROTULO_STATUS, formatarDataHora } from '../statusPedido'
-import type { Pedido } from '../types'
+import type { Pedido, StatusPedido } from '../types'
 import styles from './Pedidos.module.css'
+
+// Consulta periódica enquanto o pedido anda. A fase 6 pode trocar por SSE; por
+// ora, 3 segundos bastam para o cliente ver o pagamento e o preparo avançarem.
+const INTERVALO_ATUALIZACAO_MS = 3000
+const FINALIZADOS: StatusPedido[] = ['ENTREGUE', 'CANCELADO', 'RECUSADO']
 
 function mensagemDe(error: unknown, padrao: string) {
   return error instanceof ApiError ? error.message : padrao
@@ -15,16 +22,37 @@ function mensagemDe(error: unknown, padrao: string) {
 
 export function PedidoPage() {
   const { id } = useParams()
+  const pedidoId = Number(id)
   const { token } = useAuth()
   const [pedido, setPedido] = useState<Pedido | null>(null)
+  const [pagamento, setPagamento] = useState<Pagamento | null>(null)
   const [erro, setErro] = useState('')
 
-  useEffect(() => {
+  const carregar = useCallback(async () => {
     if (!token) return
-    buscarPedido(token, Number(id))
-      .then(setPedido)
-      .catch((error) => setErro(mensagemDe(error, 'Não foi possível carregar o pedido.')))
-  }, [token, id])
+    const [pedidoAtual, pagamentoAtual] = await Promise.all([
+      buscarPedido(token, pedidoId),
+      buscarPagamento(token, pedidoId),
+    ])
+    setPedido(pedidoAtual)
+    setPagamento(pagamentoAtual)
+  }, [token, pedidoId])
+
+  useEffect(() => {
+    carregar().catch((error) => setErro(mensagemDe(error, 'Não foi possível carregar o pedido.')))
+  }, [carregar])
+
+  const carregado = pedido !== null
+  const finalizado = pedido ? FINALIZADOS.includes(pedido.status) : false
+
+  // Depende de "carregado" e não do objeto pedido: cada consulta traz um objeto
+  // novo, e o intervalo seria desfeito e recriado a cada 3 segundos.
+  useEffect(() => {
+    if (!carregado || finalizado) return
+    // Falha pontual de rede não interrompe a consulta: a próxima tenta de novo.
+    const intervalo = setInterval(() => { carregar().catch(() => undefined) }, INTERVALO_ATUALIZACAO_MS)
+    return () => clearInterval(intervalo)
+  }, [carregado, finalizado, carregar])
 
   async function cancelar() {
     if (!token || !pedido) return
@@ -36,6 +64,8 @@ export function PedidoPage() {
       setErro(mensagemDe(error, 'Não foi possível cancelar o pedido.'))
     }
   }
+
+  const cobrancaEmAberto = pagamento?.status === 'PENDENTE'
 
   return (
     <>
@@ -55,8 +85,14 @@ export function PedidoPage() {
                   {' · '}{formatarDataHora(pedido.criadoEm)}
                 </span>
               </div>
-              <span className={styles.status} data-status={pedido.status}>{ROTULO_STATUS[pedido.status]}</span>
+              <span className={styles.status} data-status={pedido.status} aria-live="polite">
+                {ROTULO_STATUS[pedido.status]}
+              </span>
             </header>
+
+            {pedido.status === 'AGUARDANDO_PAGAMENTO' && token && (
+              <PagamentoPix token={token} pedidoId={pedido.id} pagamento={pagamento} aoMudar={setPagamento} />
+            )}
 
             <section className={styles.bloco}>
               <h2>Itens</h2>
@@ -89,7 +125,7 @@ export function PedidoPage() {
               </ol>
             </section>
 
-            {pedido.status === 'AGUARDANDO_PAGAMENTO' && (
+            {pedido.status === 'AGUARDANDO_PAGAMENTO' && !cobrancaEmAberto && (
               <button className="botao botao-secundario" onClick={cancelar} type="button">Cancelar pedido</button>
             )}
           </>

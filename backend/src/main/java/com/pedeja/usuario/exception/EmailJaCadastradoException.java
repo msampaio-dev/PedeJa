@@ -1,4 +1,4 @@
-package com.pedeja.auth.exception;
+package com.pedeja.usuario.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

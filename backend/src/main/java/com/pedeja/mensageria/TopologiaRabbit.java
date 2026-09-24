@@ -2,12 +2,15 @@ package com.pedeja.mensageria;
 
 import org.springframework.amqp.core.AnonymousQueue;
 import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.Declarable;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.LazyInitializationExcludeFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,6 +29,17 @@ import org.springframework.context.annotation.Configuration;
 public class TopologiaRabbit {
 
 	public record Nomes(String exchangePedidos, String exchangeMortas, String filaNotificacoes, String filaNotificacoesMortas) {
+	}
+
+	/**
+	 * Em produção a inicialização é preguiçosa (spring.main.lazy-initialization),
+	 * e bean que ninguém pede não é criado. O RabbitAdmin e as filas, exchanges e
+	 * bindings precisam existir desde o início: é o RabbitAdmin que os declara no
+	 * broker quando a conexão abre.
+	 */
+	@Bean
+	static LazyInitializationExcludeFilter mensageriaSempreCriada() {
+		return LazyInitializationExcludeFilter.forBeanTypes(RabbitAdmin.class, Declarable.class);
 	}
 
 	@Bean

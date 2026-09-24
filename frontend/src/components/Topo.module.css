@@ -26,3 +26,33 @@
   gap: 12px;
   font-weight: 600;
 }
+
+.link {
+  color: var(--color-text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--color-primary);
+}
+
+.contador {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 560px) {
+  .usuario {
+    gap: 10px;
+    font-size: 0.9rem;
+  }
+}

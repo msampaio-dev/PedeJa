@@ -80,8 +80,29 @@
 }
 
 .preco {
-  flex-shrink: 0;
+  display: block;
+  margin-top: 6px;
   font-weight: 700;
+}
+
+.item button {
+  flex-shrink: 0;
+}
+
+/* Fica presa ao pé da tela enquanto houver itens na sacola. */
+.barraSacola {
+  position: sticky;
+  bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .erro {

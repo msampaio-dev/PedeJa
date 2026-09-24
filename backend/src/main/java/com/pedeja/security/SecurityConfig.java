@@ -52,6 +52,7 @@ public class SecurityConfig {
 						).permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/v1/restaurantes", "/api/v1/restaurantes/**").permitAll()
 						.requestMatchers("/api/v1/meu-restaurante", "/api/v1/meu-restaurante/**").hasRole("RESTAURANTE")
+						.requestMatchers("/api/v1/pedidos", "/api/v1/pedidos/**").hasRole("CLIENTE")
 						.requestMatchers(
 								"/v3/api-docs/**",
 								"/swagger-ui/**",

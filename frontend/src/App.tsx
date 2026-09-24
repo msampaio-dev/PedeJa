@@ -6,9 +6,13 @@ import { CadastroPage } from './features/auth/pages/CadastroPage'
 import { LoginPage } from './features/auth/pages/LoginPage'
 import { rotaInicial } from './features/auth/rotaInicial'
 import { PainelRestaurantePage } from './features/painel/PainelRestaurantePage'
+import { MeusPedidosPage } from './features/pedidos/pages/MeusPedidosPage'
+import { PedidoPage } from './features/pedidos/pages/PedidoPage'
 import { CadastroRestaurantePage } from './features/restaurantes/pages/CadastroRestaurantePage'
 import { CardapioPage } from './features/restaurantes/pages/CardapioPage'
 import { RestaurantesPage } from './features/restaurantes/pages/RestaurantesPage'
+import { SacolaPage } from './features/sacola/SacolaPage'
+import { SacolaProvider } from './features/sacola/SacolaProvider'
 
 // Visitante e cliente caem na lista de restaurantes; o dono, no painel.
 function Inicio() {
@@ -21,18 +25,27 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Inicio />} />
-          <Route path="/entrar" element={<LoginPage />} />
-          <Route path="/cadastro" element={<CadastroPage />} />
-          <Route path="/cadastro/restaurante" element={<CadastroRestaurantePage />} />
-          <Route path="/restaurantes" element={<RestaurantesPage />} />
-          <Route path="/restaurantes/:id" element={<CardapioPage />} />
-          <Route path="/restaurante" element={
-            <RotaProtegida perfil="RESTAURANTE"><PainelRestaurantePage /></RotaProtegida>
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <SacolaProvider>
+          <Routes>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/entrar" element={<LoginPage />} />
+            <Route path="/cadastro" element={<CadastroPage />} />
+            <Route path="/cadastro/restaurante" element={<CadastroRestaurantePage />} />
+            <Route path="/restaurantes" element={<RestaurantesPage />} />
+            <Route path="/restaurantes/:id" element={<CardapioPage />} />
+            <Route path="/sacola" element={<SacolaPage />} />
+            <Route path="/pedidos" element={
+              <RotaProtegida perfil="CLIENTE"><MeusPedidosPage /></RotaProtegida>
+            } />
+            <Route path="/pedidos/:id" element={
+              <RotaProtegida perfil="CLIENTE"><PedidoPage /></RotaProtegida>
+            } />
+            <Route path="/restaurante" element={
+              <RotaProtegida perfil="RESTAURANTE"><PainelRestaurantePage /></RotaProtegida>
+            } />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </SacolaProvider>
       </AuthProvider>
     </BrowserRouter>
   )

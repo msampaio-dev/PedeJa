@@ -1,0 +1,114 @@
+.pagina {
+  width: min(100% - 32px, 640px);
+  margin: 24px auto 48px;
+}
+
+.pagina h1 {
+  margin: 0 0 6px;
+}
+
+.meta {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.meta a {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.itens {
+  display: grid;
+  margin: 20px 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  list-style: none;
+}
+
+.itens li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.itens li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+.itens li > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.quantidade {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.quantidade button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.totais {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 24px;
+}
+
+.totais div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.totais dt,
+.totais dd {
+  margin: 0;
+}
+
+.totais .total {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.formulario {
+  display: grid;
+  gap: 14px;
+}
+
+.formulario label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.formulario input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.erro {
+  margin: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--color-error-bg);
+  color: var(--color-primary-dark);
+}

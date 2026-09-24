@@ -1,0 +1,19 @@
+# Backend
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Ambiente e IDEs
+.env
+*.log
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+.factorypath
+.ai-memory.toml

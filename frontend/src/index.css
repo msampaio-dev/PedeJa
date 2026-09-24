@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: #3e3e3e;
+  background: #f7f7f7;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --color-background: #f7f7f7;
+  --color-surface: #ffffff;
+  --color-text: #3e3e3e;
+  --color-text-muted: #717171;
+  --color-primary: #ea1d2c;
+  --color-primary-dark: #c41624;
+  --color-border: #e6e6e6;
+  --color-error-bg: #fdecee;
+  --color-success-bg: #e8f6ee;
+  --color-success: #1a7f45;
+  --radius: 12px;
+  --content-width: 1120px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+button,
+input,
+a {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(234, 29, 44, 0.35);
+  outline-offset: 2px;
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.botao:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.botao-secundario {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+
+.botao-secundario:hover:not(:disabled) {
+  background: var(--color-error-bg);
+}

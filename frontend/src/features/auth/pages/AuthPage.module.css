@@ -1,0 +1,103 @@
+.pagina {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+
+.cartao {
+  width: min(100%, 420px);
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.marca {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: var(--color-primary);
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.cartao h1 {
+  margin: 0 0 24px;
+  font-size: 1.4rem;
+}
+
+.formulario {
+  display: grid;
+  gap: 16px;
+}
+
+.formulario label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.formulario input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.erro,
+.sucesso {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.erro {
+  background: var(--color-error-bg);
+  color: var(--color-primary-dark);
+}
+
+.sucesso {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.campoErro {
+  color: var(--color-primary-dark);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.demonstracao {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.demonstracao p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.demonstracao div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.rodape {
+  margin: 20px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.rodape a {
+  color: var(--color-primary);
+  font-weight: 700;
+}

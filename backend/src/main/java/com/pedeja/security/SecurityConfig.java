@@ -51,6 +51,9 @@ public class SecurityConfig {
 								"/api/v1/restaurantes/cadastro"
 						).permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/v1/restaurantes", "/api/v1/restaurantes/**").permitAll()
+						// Chamados por sistemas, não por usuários: o webhook se autentica pela
+						// assinatura HMAC, e o gateway falso só existe como sandbox de demonstração.
+						.requestMatchers(HttpMethod.POST, "/api/v1/webhooks/pagamentos", "/api/v1/gateway-fake/**").permitAll()
 						.requestMatchers("/api/v1/meu-restaurante", "/api/v1/meu-restaurante/**").hasRole("RESTAURANTE")
 						.requestMatchers("/api/v1/pedidos", "/api/v1/pedidos/**").hasRole("CLIENTE")
 						.requestMatchers(

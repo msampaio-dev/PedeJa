@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pedeja.shared.Cenario;
-import com.pedeja.shared.PostgresIntegrationTest;
+import com.pedeja.shared.ContainersIntegrationTest;
 
 /**
  * Sobe o servidor numa porta de verdade: o gateway falso entrega o webhook por
@@ -29,7 +29,7 @@ import com.pedeja.shared.PostgresIntegrationTest;
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class PagamentoFimAFimTest extends PostgresIntegrationTest {
+class PagamentoFimAFimTest extends ContainersIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;

@@ -24,11 +24,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pedeja.shared.Cenario;
 import com.pedeja.shared.Cenario.RestauranteDeTeste;
-import com.pedeja.shared.PostgresIntegrationTest;
+import com.pedeja.shared.ContainersIntegrationTest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class PedidoIntegrationTest extends PostgresIntegrationTest {
+class PedidoIntegrationTest extends ContainersIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;

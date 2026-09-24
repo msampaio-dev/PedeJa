@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pedeja.pagamento.webhook.AssinaturaWebhook;
 import com.pedeja.shared.Cenario;
-import com.pedeja.shared.PostgresIntegrationTest;
+import com.pedeja.shared.ContainersIntegrationTest;
 
 /**
  * Chama o webhook direto, como o gateway chamaria, com eventos assinados pelo
@@ -34,7 +34,7 @@ import com.pedeja.shared.PostgresIntegrationTest;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class PagamentoIntegrationTest extends PostgresIntegrationTest {
+class PagamentoIntegrationTest extends ContainersIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;

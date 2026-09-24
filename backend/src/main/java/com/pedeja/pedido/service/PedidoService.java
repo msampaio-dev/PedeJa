@@ -157,7 +157,7 @@ public class PedidoService {
 		}
 
 		pedido.mudarStatus(StatusPedido.CANCELADO, agora);
-		return PedidoResponse.from(pedido);
+		return PedidoResponse.from(pedidoRepository.save(pedido));
 	}
 
 	@Transactional(readOnly = true)
@@ -193,7 +193,9 @@ public class PedidoService {
 				.orElseThrow(PedidoNaoEncontradoException::new);
 
 		pedido.mudarStatus(novo, Instant.now(clock));
-		return PedidoResponse.from(pedido);
+		// O pedido já está gerenciado e seria gravado mesmo sem save(). O save()
+		// explícito é o que dispara os eventos de domínio que viram o outbox.
+		return PedidoResponse.from(pedidoRepository.save(pedido));
 	}
 
 	/** Trava a linha do pedido (FOR UPDATE) e confere se ele é do cliente. */

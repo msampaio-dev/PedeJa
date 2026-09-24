@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AuthContext, type AuthContextValue } from '../../auth/context/AuthContext'
+import { SacolaProvider } from '../../sacola/SacolaProvider'
 import type { Pagina, Restaurante } from '../types'
 import { RestaurantesPage } from './RestaurantesPage'
 
@@ -22,7 +23,7 @@ function renderizar() {
   const contexto: AuthContextValue = { sessao: null, token: null, carregando: false, entrar: vi.fn(), sair: vi.fn() }
   render(
     <AuthContext.Provider value={contexto}>
-      <MemoryRouter><RestaurantesPage /></MemoryRouter>
+      <SacolaProvider><MemoryRouter><RestaurantesPage /></MemoryRouter></SacolaProvider>
     </AuthContext.Provider>,
   )
 }

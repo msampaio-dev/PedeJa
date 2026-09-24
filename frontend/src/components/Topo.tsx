@@ -1,10 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../features/auth/context/useAuth'
+import { useSacola } from '../features/sacola/useSacola'
 import styles from './Topo.module.css'
 
 export function Topo() {
   const navigate = useNavigate()
   const { sessao, carregando, sair } = useAuth()
+  const { quantidadeTotal } = useSacola()
+  const ehRestaurante = sessao?.perfil === 'RESTAURANTE'
 
   function encerrar() {
     sair()
@@ -15,15 +18,21 @@ export function Topo() {
     <header className={styles.topo}>
       <div className={styles.conteudo}>
         <Link className={styles.marca} to="/">PedeJá</Link>
-        {sessao && (
-          <div className={styles.usuario}>
-            <span>Olá, {sessao.nome.split(' ')[0]}</span>
+        <nav className={styles.usuario}>
+          {ehRestaurante && <Link className={styles.link} to="/restaurante">Meu restaurante</Link>}
+          {sessao?.perfil === 'CLIENTE' && <Link className={styles.link} to="/pedidos">Meus pedidos</Link>}
+          {!ehRestaurante && (
+            <Link className={styles.link} to="/sacola">
+              Sacola{quantidadeTotal > 0 && <span className={styles.contador}>{quantidadeTotal}</span>}
+            </Link>
+          )}
+          {sessao && (
             <button className="botao botao-secundario" onClick={encerrar} type="button">Sair</button>
-          </div>
-        )}
-        {!sessao && !carregando && (
-          <Link className="botao botao-secundario" to="/entrar">Entrar</Link>
-        )}
+          )}
+          {!sessao && !carregando && (
+            <Link className="botao botao-secundario" to="/entrar">Entrar</Link>
+          )}
+        </nav>
       </div>
     </header>
   )

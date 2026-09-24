@@ -8,12 +8,16 @@ import {
   formatarPreco,
   formatarTaxaEntrega,
 } from '../../../shared/formatadores'
+import { useAuth } from '../../auth/context/useAuth'
+import { useSacola } from '../../sacola/useSacola'
 import { buscarCardapio } from '../restauranteApi'
-import type { CardapioPublico } from '../types'
+import type { CardapioPublico, ItemCardapio } from '../types'
 import styles from './CardapioPage.module.css'
 
 export function CardapioPage() {
   const { id } = useParams()
+  const { sessao } = useAuth()
+  const sacola = useSacola()
   const [cardapio, setCardapio] = useState<CardapioPublico | null>(null)
   const [erro, setErro] = useState('')
 
@@ -26,6 +30,30 @@ export function CardapioPage() {
       })
     return () => { ativo = false }
   }, [id])
+
+  // Conta de restaurante só olha: não faz pedido.
+  const podePedir = Boolean(cardapio?.restaurante.aberto) && sessao?.perfil !== 'RESTAURANTE'
+
+  function adicionar(item: ItemCardapio) {
+    if (!cardapio) return
+    const { restaurante } = cardapio
+
+    if (sacola.restaurante && sacola.restaurante.id !== restaurante.id) {
+      const trocar = window.confirm(
+        `Sua sacola tem itens de ${sacola.restaurante.nome}. Esvaziar e começar uma nova com ${restaurante.nome}?`)
+      if (!trocar) return
+    }
+
+    sacola.adicionar(
+      { id: restaurante.id, nome: restaurante.nome, taxaEntrega: restaurante.taxaEntrega },
+      { itemId: item.id, nome: item.nome, preco: item.preco },
+    )
+  }
+
+  const quantidadeNaSacola = (itemId: number) =>
+    sacola.restaurante?.id === cardapio?.restaurante.id
+      ? sacola.itens.find((i) => i.itemId === itemId)?.quantidade ?? 0
+      : 0
 
   return (
     <>
@@ -66,12 +94,25 @@ export function CardapioPage() {
                   <div>
                     <strong>{item.nome}</strong>
                     {item.descricao && <p>{item.descricao}</p>}
+                    <span className={styles.preco}>{formatarPreco(item.preco)}</span>
                   </div>
-                  <span className={styles.preco}>{formatarPreco(item.preco)}</span>
+                  {podePedir && (
+                    <button aria-label={`Adicionar ${item.nome}`} className="botao botao-secundario"
+                      onClick={() => adicionar(item)} type="button">
+                      {quantidadeNaSacola(item.id) > 0 ? `+ (${quantidadeNaSacola(item.id)})` : 'Adicionar'}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
           </>
+        )}
+
+        {sacola.quantidadeTotal > 0 && sessao?.perfil !== 'RESTAURANTE' && (
+          <Link className={styles.barraSacola} to="/sacola">
+            <span>Ver sacola ({sacola.quantidadeTotal})</span>
+            <strong>{formatarPreco(sacola.subtotal)}</strong>
+          </Link>
         )}
       </main>
     </>

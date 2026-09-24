@@ -1,0 +1,55 @@
+# Blueprint do Render para a API do PedeJa.
+#
+# Banco e RabbitMQ ficam fora daqui de proposito: o PostgreSQL gratuito do
+# Render expira em 30 dias, e o Render nao oferece RabbitMQ. O banco fica no
+# Neon e o broker no CloudAMQP (planos gratuitos, sem expiracao), e os dois
+# chegam por variaveis de ambiente.
+#
+# Crie os dois na mesma regiao deste servico (us-west-2, Oregon). No AgendaPro,
+# banco em Sao Paulo com a API em Oregon custava ~320 ms por consulta; na mesma
+# regiao, ~4 ms.
+services:
+  - type: web
+    name: pedeja-api
+    runtime: docker
+    plan: free
+    region: oregon
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    # O frontend mora no mesmo repositorio. Mudanca so nele nao reimplanta a API.
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      # A documentacao interativa faz parte do que se quer mostrar.
+      - key: SWAGGER_ENABLED
+        value: "true"
+
+      # Restaurantes, cardapios e contas de demonstracao.
+      - key: FLYWAY_LOCATIONS
+        value: classpath:db/migration,classpath:db/devdata
+
+      # Gateway de Pix falso: a demonstracao nao movimenta dinheiro.
+      - key: GATEWAY_FAKE_ENABLED
+        value: "true"
+
+      - key: JWT_SECRET
+        generateValue: true
+      - key: WEBHOOK_SECRET
+        generateValue: true
+
+      # Preenchidos manualmente no painel do Render (Environment).
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false

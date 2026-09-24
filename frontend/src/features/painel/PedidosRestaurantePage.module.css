@@ -1,0 +1,96 @@
+.pagina {
+  width: min(100% - 32px, var(--content-width));
+  margin: 24px auto 48px;
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.cabecalho h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+
+.meta {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+/* Pedido pago que ainda não foi aceito nem recusado. */
+.novo {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(234, 29, 44, 0.15);
+}
+
+.topoCartao,
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.status {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #fff6e0;
+  color: #7a5200;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status[data-status='PAGO'] {
+  background: var(--color-error-bg);
+  color: var(--color-primary-dark);
+}
+
+.itens {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.observacao {
+  margin: 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff6e0;
+  font-size: 0.9rem;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.erro {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--color-error-bg);
+  color: var(--color-primary-dark);
+}

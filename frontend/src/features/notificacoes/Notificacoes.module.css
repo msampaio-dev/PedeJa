@@ -1,0 +1,87 @@
+.envoltorio {
+  position: relative;
+}
+
+.sino {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.contador {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.painel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  width: min(340px, calc(100vw - 32px));
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.painel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.painel li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+.painel a {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  color: var(--color-text);
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.painel a:hover {
+  background: var(--color-background);
+}
+
+.painel small {
+  color: var(--color-text-muted);
+}
+
+.naoLida {
+  background: var(--color-error-bg);
+}
+
+.naoLida span {
+  font-weight: 700;
+}
+
+.vazio {
+  margin: 0;
+  padding: 16px;
+  color: var(--color-text-muted);
+}

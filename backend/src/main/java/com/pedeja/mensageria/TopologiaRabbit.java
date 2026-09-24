@@ -1,5 +1,6 @@
 package com.pedeja.mensageria;
 
+import org.springframework.amqp.core.AnonymousQueue;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -71,5 +72,19 @@ public class TopologiaRabbit {
 	@Bean
 	Binding mortasVaoParaDlq(Queue filaNotificacoesMortas, DirectExchange exchangeMortas, Nomes nomes) {
 		return BindingBuilder.bind(filaNotificacoesMortas).to(exchangeMortas).with(nomes.filaNotificacoes());
+	}
+
+	/**
+	 * Fila do tempo real (SSE): anônima, exclusiva desta instância e apagada
+	 * quando ela cai. Cada instância recebe todos os eventos. Ver ConsumidorTempoReal.
+	 */
+	@Bean
+	Queue filaTempoReal() {
+		return new AnonymousQueue();
+	}
+
+	@Bean
+	Binding tempoRealRecebeStatus(Queue filaTempoReal, TopicExchange exchangePedidos) {
+		return BindingBuilder.bind(filaTempoReal).to(exchangePedidos).with("pedido.status.#");
 	}
 }

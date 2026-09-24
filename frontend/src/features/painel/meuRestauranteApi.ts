@@ -1,4 +1,5 @@
 import { apiRequest } from '../../services/api'
+import type { Pedido, StatusPedido } from '../pedidos/types'
 import type { DadosItemCardapio, DadosRestaurante, ItemCardapio, Restaurante } from '../restaurantes/types'
 
 function autorizado(token: string, opcoes: RequestInit = {}): RequestInit {
@@ -38,5 +39,16 @@ export function atualizarItem(token: string, id: number, dados: DadosItemCardapi
   return apiRequest<ItemCardapio>(`/meu-restaurante/itens/${id}`, autorizado(token, {
     method: 'PUT',
     body: JSON.stringify(dados),
+  }))
+}
+
+export function listarPedidosDoRestaurante(token: string) {
+  return apiRequest<Pedido[]>('/meu-restaurante/pedidos', autorizado(token))
+}
+
+export function mudarStatusPedido(token: string, pedidoId: number, status: StatusPedido) {
+  return apiRequest<Pedido>(`/meu-restaurante/pedidos/${pedidoId}/status`, autorizado(token, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
   }))
 }

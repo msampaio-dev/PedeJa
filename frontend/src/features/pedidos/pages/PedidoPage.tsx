@@ -4,6 +4,7 @@ import { Topo } from '../../../components/Topo'
 import { ApiError } from '../../../services/api'
 import { formatarPreco } from '../../../shared/formatadores'
 import { useAuth } from '../../auth/context/useAuth'
+import { useEventosPedido } from '../../eventos/useEventosPedido'
 import { PagamentoPix } from '../../pagamento/PagamentoPix'
 import { type Pagamento, buscarPagamento } from '../../pagamento/pagamentoApi'
 import { buscarPedido, cancelarPedido } from '../pedidoApi'
@@ -11,9 +12,9 @@ import { ROTULO_STATUS, formatarDataHora } from '../statusPedido'
 import type { Pedido, StatusPedido } from '../types'
 import styles from './Pedidos.module.css'
 
-// Consulta periódica enquanto o pedido anda. A fase 6 pode trocar por SSE; por
-// ora, 3 segundos bastam para o cliente ver o pagamento e o preparo avançarem.
-const INTERVALO_ATUALIZACAO_MS = 3000
+// As mudanças chegam na hora pelo SSE. A consulta periódica fica como rede de
+// segurança para quando a conexão cair sem avisar.
+const INTERVALO_ATUALIZACAO_MS = 15000
 const FINALIZADOS: StatusPedido[] = ['ENTREGUE', 'CANCELADO', 'RECUSADO']
 
 function mensagemDe(error: unknown, padrao: string) {
@@ -42,11 +43,15 @@ export function PedidoPage() {
     carregar().catch((error) => setErro(mensagemDe(error, 'Não foi possível carregar o pedido.')))
   }, [carregar])
 
+  useEventosPedido((evento) => {
+    if (evento.pedidoId === pedidoId) carregar().catch(() => undefined)
+  })
+
   const carregado = pedido !== null
   const finalizado = pedido ? FINALIZADOS.includes(pedido.status) : false
 
   // Depende de "carregado" e não do objeto pedido: cada consulta traz um objeto
-  // novo, e o intervalo seria desfeito e recriado a cada 3 segundos.
+  // novo, e o intervalo seria desfeito e recriado a cada atualização.
   useEffect(() => {
     if (!carregado || finalizado) return
     // Falha pontual de rede não interrompe a consulta: a próxima tenta de novo.

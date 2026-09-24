@@ -4,7 +4,7 @@ import styles from './Topo.module.css'
 
 export function Topo() {
   const navigate = useNavigate()
-  const { sessao, sair } = useAuth()
+  const { sessao, carregando, sair } = useAuth()
 
   function encerrar() {
     sair()
@@ -20,6 +20,9 @@ export function Topo() {
             <span>Olá, {sessao.nome.split(' ')[0]}</span>
             <button className="botao botao-secundario" onClick={encerrar} type="button">Sair</button>
           </div>
+        )}
+        {!sessao && !carregando && (
+          <Link className="botao botao-secundario" to="/entrar">Entrar</Link>
         )}
       </div>
     </header>

@@ -5,12 +5,16 @@ import { useAuth } from './features/auth/context/useAuth'
 import { CadastroPage } from './features/auth/pages/CadastroPage'
 import { LoginPage } from './features/auth/pages/LoginPage'
 import { rotaInicial } from './features/auth/rotaInicial'
-import { AreaEmConstrucao } from './pages/AreaEmConstrucao'
+import { PainelRestaurantePage } from './features/painel/PainelRestaurantePage'
+import { CadastroRestaurantePage } from './features/restaurantes/pages/CadastroRestaurantePage'
+import { CardapioPage } from './features/restaurantes/pages/CardapioPage'
+import { RestaurantesPage } from './features/restaurantes/pages/RestaurantesPage'
 
+// Visitante e cliente caem na lista de restaurantes; o dono, no painel.
 function Inicio() {
   const { sessao, carregando } = useAuth()
   if (carregando) return null
-  return <Navigate to={sessao ? rotaInicial(sessao.perfil) : '/entrar'} replace />
+  return <Navigate to={sessao ? rotaInicial(sessao.perfil) : '/restaurantes'} replace />
 }
 
 function App() {
@@ -21,15 +25,11 @@ function App() {
           <Route path="/" element={<Inicio />} />
           <Route path="/entrar" element={<LoginPage />} />
           <Route path="/cadastro" element={<CadastroPage />} />
-          <Route path="/restaurantes" element={
-            <RotaProtegida perfil="CLIENTE">
-              <AreaEmConstrucao titulo="Restaurantes" descricao="A lista de restaurantes chega na fase 2." />
-            </RotaProtegida>
-          } />
+          <Route path="/cadastro/restaurante" element={<CadastroRestaurantePage />} />
+          <Route path="/restaurantes" element={<RestaurantesPage />} />
+          <Route path="/restaurantes/:id" element={<CardapioPage />} />
           <Route path="/restaurante" element={
-            <RotaProtegida perfil="RESTAURANTE">
-              <AreaEmConstrucao titulo="Painel do restaurante" descricao="Cardápio e pedidos chegam nas próximas fases." />
-            </RotaProtegida>
+            <RotaProtegida perfil="RESTAURANTE"><PainelRestaurantePage /></RotaProtegida>
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

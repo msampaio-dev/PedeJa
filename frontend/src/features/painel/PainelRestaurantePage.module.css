@@ -1,0 +1,146 @@
+.pagina {
+  width: min(100% - 32px, var(--content-width));
+  margin: 24px auto 48px;
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cabecalho h1 {
+  margin: 0 0 6px;
+  font-size: 1.6rem;
+}
+
+.aberto,
+.fechado {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.aberto {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.fechado {
+  background: #eee;
+  color: var(--color-text-muted);
+}
+
+.colunas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .colunas {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bloco {
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.bloco h2 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+}
+
+.bloco h2:not(:first-child) {
+  margin-top: 28px;
+}
+
+.itens {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.itens li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.itens li div {
+  display: grid;
+  gap: 2px;
+}
+
+.itens li span {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.indisponivel strong {
+  color: var(--color-text-muted);
+}
+
+.formulario {
+  display: grid;
+  gap: 12px;
+}
+
+.formulario label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.formulario input:not([type='checkbox']),
+.formulario select {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.formulario .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.erro,
+.sucesso {
+  margin: 0 0 12px;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.erro {
+  background: var(--color-error-bg);
+  color: var(--color-primary-dark);
+}
+
+.sucesso {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}

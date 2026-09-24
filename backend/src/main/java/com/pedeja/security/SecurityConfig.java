@@ -44,7 +44,14 @@ public class SecurityConfig {
 						.accessDeniedHandler((request, response, exception) ->
 								securityErrorWriter.escrever(request, response, HttpStatus.FORBIDDEN, "Acesso negado")))
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.POST, "/api/v1/auth/cadastro", "/api/v1/auth/login").permitAll()
+						.requestMatchers(
+								HttpMethod.POST,
+								"/api/v1/auth/cadastro",
+								"/api/v1/auth/login",
+								"/api/v1/restaurantes/cadastro"
+						).permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/restaurantes", "/api/v1/restaurantes/**").permitAll()
+						.requestMatchers("/api/v1/meu-restaurante", "/api/v1/meu-restaurante/**").hasRole("RESTAURANTE")
 						.requestMatchers(
 								"/v3/api-docs/**",
 								"/swagger-ui/**",

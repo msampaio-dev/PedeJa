@@ -72,6 +72,7 @@ export function CadastroPage() {
         </form>
 
         <p className={styles.rodape}>Já tem conta? <Link to="/entrar">Entrar</Link></p>
+        <p className={styles.rodape}>Tem um restaurante? <Link to="/cadastro/restaurante">Cadastre aqui</Link></p>
       </section>
     </main>
   )

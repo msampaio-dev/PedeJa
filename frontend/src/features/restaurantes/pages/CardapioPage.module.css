@@ -1,0 +1,92 @@
+.pagina {
+  width: min(100% - 32px, 820px);
+  margin: 24px auto 48px;
+}
+
+.voltar {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 20px 0;
+}
+
+.cabecalho h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+}
+
+.cabecalho p {
+  margin: 0 0 4px;
+}
+
+.logo {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  font-size: 2.4rem;
+}
+
+.meta {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.aviso {
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff6e0;
+  color: #7a5200;
+}
+
+.pagina h2 {
+  margin: 28px 0 12px;
+  font-size: 1.2rem;
+}
+
+.itens {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.item p {
+  margin: 4px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.preco {
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.erro {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--color-error-bg);
+  color: var(--color-primary-dark);
+}

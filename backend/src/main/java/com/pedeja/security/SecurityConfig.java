@@ -15,6 +15,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import jakarta.servlet.DispatcherType;
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -44,6 +46,10 @@ public class SecurityConfig {
 						.accessDeniedHandler((request, response, exception) ->
 								securityErrorWriter.escrever(request, response, HttpStatus.FORBIDDEN, "Acesso negado")))
 				.authorizeHttpRequests(auth -> auth
+						// A conexão SSE já foi autorizada na requisição original. Quando o
+						// servidor fecha o fluxo, o Tomcat faz um despacho ASYNC sem o token,
+						// que não pode ser barrado como se fosse uma requisição nova.
+						.dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
 						.requestMatchers(
 								HttpMethod.POST,
 								"/api/v1/auth/cadastro",

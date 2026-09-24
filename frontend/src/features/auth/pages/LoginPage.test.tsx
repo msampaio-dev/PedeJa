@@ -16,7 +16,7 @@ function renderizar(entrar: AuthContextValue['entrar']) {
         <Routes>
           <Route path="/entrar" element={<LoginPage />} />
           <Route path="/restaurantes" element={<p>área do cliente</p>} />
-          <Route path="/restaurante" element={<p>área do restaurante</p>} />
+          <Route path="/restaurante/pedidos" element={<p>área do restaurante</p>} />
         </Routes>
       </MemoryRouter>
     </AuthContext.Provider>,

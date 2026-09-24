@@ -142,6 +142,7 @@ public class PagamentoService {
 
 		if (pedido.getStatus() == StatusPedido.AGUARDANDO_PAGAMENTO) {
 			pedido.mudarStatus(StatusPedido.PAGO, agora);
+			pedidoRepository.save(pedido);
 		} else {
 			// O dinheiro entrou, mas o pedido não espera mais pagamento (foi
 			// cancelado depois que a cobrança venceu, ou já foi pago por outra).

@@ -3,7 +3,11 @@ package com.pedeja.pedido.entity;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.data.domain.AfterDomainEventPublication;
+import org.springframework.data.domain.DomainEvents;
 
 import com.pedeja.pedido.exception.TransicaoStatusInvalidaException;
 import com.pedeja.restaurante.entity.Restaurante;
@@ -22,6 +26,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "pedidos")
@@ -74,6 +79,11 @@ public class Pedido {
 	@OrderBy("id")
 	private List<HistoricoStatusPedido> historico = new ArrayList<>();
 
+	// Mudanças ainda não anunciadas. Não vão para o banco: viram eventos quando o
+	// repositório salva o pedido, e a lista é limpa em seguida.
+	@Transient
+	private final List<HistoricoStatusPedido> mudancasNaoPublicadas = new ArrayList<>();
+
 	protected Pedido() {
 	}
 
@@ -119,7 +129,27 @@ public class Pedido {
 	private void registrarStatus(StatusPedido novo, Instant agora) {
 		this.status = novo;
 		this.atualizadoEm = agora;
-		historico.add(new HistoricoStatusPedido(this, novo, agora));
+		HistoricoStatusPedido registro = new HistoricoStatusPedido(this, novo, agora);
+		historico.add(registro);
+		mudancasNaoPublicadas.add(registro);
+	}
+
+	/**
+	 * Chamado pelo Spring Data no save(). Os eventos são montados aqui, e não em
+	 * registrarStatus, porque um pedido novo só tem id depois de persistido.
+	 */
+	@DomainEvents
+	Collection<PedidoStatusAlterado> eventosDeDominio() {
+		return mudancasNaoPublicadas.stream()
+				.map(registro -> new PedidoStatusAlterado(
+						id, clienteId, restaurante.getId(), restaurante.getUsuarioId(),
+						registro.getStatus(), registro.getOcorridoEm()))
+				.toList();
+	}
+
+	@AfterDomainEventPublication
+	void limparEventos() {
+		mudancasNaoPublicadas.clear();
 	}
 
 	public boolean pertenceAoCliente(Long clienteId) {

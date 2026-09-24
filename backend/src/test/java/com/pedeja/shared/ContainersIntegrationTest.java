@@ -12,45 +12,50 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 
 /**
- * Base dos testes de integração com PostgreSQL real.
+ * Base dos testes de integração, com PostgreSQL e RabbitMQ reais.
  *
- * O container é um singleton iniciado uma única vez por JVM e nunca parado
- * explicitamente: o Ryuk do Testcontainers o remove ao fim da execução. Não use
+ * Os containers são singletons iniciados uma única vez por JVM e nunca parados
+ * explicitamente: o Ryuk do Testcontainers os remove ao fim da execução. Não use
  * {@code @Testcontainers}/{@code @Container} aqui — a extensão do JUnit encerra o
  * container ao fim de cada classe de teste e o recria na seguinte, numa porta
- * nova, enquanto o Spring reaproveita o ApplicationContext em cache com o pool de
+ * nova, enquanto o Spring reaproveita o ApplicationContext em cache com as
  * conexões apontando para o container antigo.
  *
- * Cada configuração de contexto recebe um banco próprio dentro desse container.
- * O isolamento é necessário porque as classes de teste partem de um banco vazio e
- * porque nem todas usam o mesmo conjunto de migrations: quem inclui
- * {@code db/devdata} aplica a carga de demonstração, que os demais contextos
- * rejeitariam na validação do Flyway.
+ * Cada configuração de contexto recebe um banco próprio dentro do PostgreSQL,
+ * para as classes de teste partirem de um banco vazio. O RabbitMQ é
+ * compartilhado: os testes de mensageria conferem pelo id do pedido, não pela
+ * contagem de mensagens na fila.
  */
 @ActiveProfiles("test")
-@EnabledIf("com.pedeja.shared.PostgresIntegrationTest#dockerDisponivel")
-public abstract class PostgresIntegrationTest {
+@EnabledIf("com.pedeja.shared.ContainersIntegrationTest#dockerDisponivel")
+public abstract class ContainersIntegrationTest {
 
-	protected static final PostgreSQLContainer<?> POSTGRES = iniciarContainer();
+	protected static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16.15-alpine");
+	protected static final RabbitMQContainer RABBITMQ = new RabbitMQContainer("rabbitmq:4-management-alpine");
 
 	private static final AtomicInteger SEQUENCIA = new AtomicInteger();
 
+	static {
+		if (dockerDisponivel()) {
+			POSTGRES.start();
+			RABBITMQ.start();
+		}
+	}
+
 	@DynamicPropertySource
-	static void bancoIsoladoPorContexto(DynamicPropertyRegistry registry) {
+	static void infraestrutura(DynamicPropertyRegistry registry) {
 		String banco = criarBanco();
 		registry.add("spring.datasource.url", () -> urlJdbc(banco));
 		registry.add("spring.datasource.username", POSTGRES::getUsername);
 		registry.add("spring.datasource.password", POSTGRES::getPassword);
-	}
-
-	private static PostgreSQLContainer<?> iniciarContainer() {
-		PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:16.15-alpine");
-		if (dockerDisponivel()) {
-			container.start();
-		}
-		return container;
+		registry.add("spring.rabbitmq.host", RABBITMQ::getHost);
+		registry.add("spring.rabbitmq.port", RABBITMQ::getAmqpPort);
+		registry.add("spring.rabbitmq.username", RABBITMQ::getAdminUsername);
+		registry.add("spring.rabbitmq.password", RABBITMQ::getAdminPassword);
+		registry.add("app.mensageria.prefixo", () -> banco);
 	}
 
 	private static String criarBanco() {

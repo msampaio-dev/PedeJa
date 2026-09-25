@@ -18,7 +18,7 @@ Uma versão simplificada do iFood, com backend em Java e Spring Boot e frontend 
 - Nenhuma mudança de status se perde, mesmo com o RabbitMQ fora do ar. O evento vai para uma tabela de outbox na mesma transação e é publicado depois, com confirmação do broker.
 - O pedido guarda uma cópia do preço de cada item. Se o restaurante mudar o cardápio amanhã, o pedido de hoje continua com o valor que foi pago.
 - O restaurante vê o pedido pago aparecer em poucos segundos, por Server-Sent Events alimentados pelo RabbitMQ.
-- Os 49 testes do backend rodam com PostgreSQL e RabbitMQ reais, em containers descartáveis.
+- Os 52 testes do backend rodam com PostgreSQL e RabbitMQ reais, em containers descartáveis.
 
 ## O fluxo de um pedido
 
@@ -56,6 +56,8 @@ AGUARDANDO_PAGAMENTO ──► PAGO ──► ACEITO ──► EM_PREPARO ──
 ```
 
 Qualquer outra transição responde 409. O restaurante não enxerga pedido que ainda não foi pago.
+
+Na demonstração, um simulador faz o papel do restaurante e do entregador. Um job a cada 3 segundos procura pedidos pagos parados e avança cada um para o próximo status: aceito depois de 10 segundos, em preparo depois de mais 5, saiu para entrega depois de 20 e entregue depois de outros 20. O prazo conta a partir da última mudança, então o restaurante pode adiantar qualquer etapa pelo painel. O job trava os pedidos com `FOR UPDATE SKIP LOCKED` e usa a mesma máquina de estados, então cada passo gera histórico, notificação e aviso em tempo real. A variável `SIMULACAO_ENTREGA_ENABLED=false` desliga o simulador.
 
 ## Pagamento e webhook
 
@@ -170,7 +172,7 @@ cd backend && ./mvnw verify
 cd frontend && npm test
 ```
 
-São 49 testes de integração no backend e 16 no frontend. Entre os casos cobertos:
+São 52 testes de integração no backend e 16 no frontend. Entre os casos cobertos:
 
 - webhook repetido, com assinatura errada, com corpo alterado e assinado há mais de 5 minutos;
 - pagamento simulado no sandbox chegando pelo webhook por HTTP, em dobro, e pagando o pedido uma vez só;
@@ -179,7 +181,8 @@ São 49 testes de integração no backend e 16 no frontend. Entre os casos cober
 - cada transição válida e inválida da máquina de estados;
 - transação desfeita sem deixar evento no outbox;
 - mensagem repetida sem duplicar notificação e mensagem ilegível indo para a DLQ;
-- conexão SSE recebendo a mudança do pedido e saindo do canal quando o cliente fecha.
+- conexão SSE recebendo a mudança do pedido e saindo do canal quando o cliente fecha;
+- simulador levando o pedido pago até entregue, sem tocar em pedido não pago ou recusado.
 
 Cada contexto do Spring nos testes usa um banco e um conjunto de filas próprios, para um não consumir a mensagem do outro. O GitHub Actions roda as duas suítes em todo push e pull request.
 
@@ -202,7 +205,7 @@ No Render, o blueprint gera `JWT_SECRET` e `WEBHOOK_SECRET` sozinho. Na Vercel, 
 - O sandbox de pagamento é público, e qualquer um pode aprovar uma cobrança dele. Ele existe só para demonstração e não existiria numa integração real.
 - O sandbox guarda as cobranças em memória. Reiniciar a API apaga as cobranças pendentes, e o cliente precisa gerar outra.
 - O plano gratuito do Render hiberna depois de 15 minutos sem tráfego, e a primeira requisição depois disso demora.
-- Não há entregador. A entrega é só um status que o restaurante atualiza.
+- Não há entregador. A entrega é um status que o restaurante atualiza ou que o simulador avança sozinho, e o simulador nunca recusa pedidos.
 
 ## Autor
 

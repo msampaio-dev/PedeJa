@@ -94,3 +94,12 @@
   background: var(--color-error-bg);
   color: var(--color-primary-dark);
 }
+
+.aviso {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff6e0;
+  color: #7a5200;
+  font-size: 0.9rem;
+}

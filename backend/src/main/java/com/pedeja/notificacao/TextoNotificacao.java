@@ -23,7 +23,7 @@ final class TextoNotificacao {
 			case AGUARDANDO_PAGAMENTO -> "Recebemos o pedido #%d. Falta só o pagamento.".formatted(pedido);
 			case PAGO -> "Pagamento do pedido #%d confirmado. Agora é com o restaurante.".formatted(pedido);
 			case ACEITO -> "O restaurante aceitou o pedido #%d.".formatted(pedido);
-			case EM_PREPARO -> "O pedido #%d está sendo preparado.".formatted(pedido);
+			case EM_PREPARO -> "O restaurante está preparando o pedido #%d.".formatted(pedido);
 			case SAIU_PARA_ENTREGA -> "O pedido #%d saiu para entrega.".formatted(pedido);
 			case ENTREGUE -> "Pedido #%d entregue. Bom apetite!".formatted(pedido);
 			case CANCELADO -> "O pedido #%d foi cancelado.".formatted(pedido);

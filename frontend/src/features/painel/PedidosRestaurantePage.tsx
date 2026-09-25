@@ -89,6 +89,11 @@ export function PedidosRestaurantePage() {
           <Link className="botao botao-secundario" to="/restaurante">Cardápio e dados</Link>
         </header>
 
+        <p className={styles.aviso}>
+          Na demonstração, um pedido parado avança sozinho alguns segundos depois da última mudança,
+          como se o restaurante e o entregador estivessem trabalhando. Use os botões para adiantar.
+        </p>
+
         {erro && <p className={styles.erro} role="alert">{erro}</p>}
         {!erro && !pedidos && <p role="status">Carregando...</p>}
         {pedidos?.length === 0 && (

@@ -1,5 +1,6 @@
 package com.pedeja.pedido.repository;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -41,4 +42,18 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("select p from Pedido p where p.id = :id")
 	Optional<Pedido> buscarParaAtualizar(@Param("id") Long id);
+
+	/**
+	 * Pedidos parados num status desde antes do limite, já travados. SKIP LOCKED
+	 * pula o pedido que o restaurante está mudando neste instante, em vez de
+	 * esperar por ele.
+	 */
+	@Query(value = """
+			SELECT * FROM pedidos
+			WHERE status = :status AND atualizado_em < :limite
+			ORDER BY atualizado_em
+			LIMIT 20
+			FOR UPDATE SKIP LOCKED
+			""", nativeQuery = true)
+	List<Pedido> travarParadosDesde(@Param("status") String status, @Param("limite") Instant limite);
 }

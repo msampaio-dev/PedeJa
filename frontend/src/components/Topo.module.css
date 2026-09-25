@@ -31,10 +31,15 @@
   color: var(--color-text);
   font-weight: 700;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .link:hover {
   color: var(--color-primary);
+}
+
+.soCelular {
+  display: none;
 }
 
 .contador {
@@ -50,9 +55,32 @@
   font-size: 0.75rem;
 }
 
+/* No celular, "Meus pedidos" vira "Pedidos" e o topo aperta os espaços para
+   caber marca, links, sino e "Sair" numa linha só em 375px. */
 @media (max-width: 560px) {
+  .conteudo {
+    gap: 8px;
+  }
+
+  .marca {
+    font-size: 1.2rem;
+  }
+
   .usuario {
     gap: 10px;
     font-size: 0.9rem;
+  }
+
+  .usuario :global(.botao) {
+    min-height: 36px;
+    padding: 0 12px;
+  }
+
+  .soDesktop {
+    display: none;
+  }
+
+  .soCelular {
+    display: inline;
   }
 }

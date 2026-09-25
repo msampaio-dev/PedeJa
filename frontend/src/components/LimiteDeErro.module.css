@@ -1,0 +1,38 @@
+.pagina {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+
+.cartao {
+  width: min(100%, 480px);
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.marca {
+  color: var(--color-primary);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.cartao h1 {
+  margin: 16px 0 8px;
+  font-size: 1.4rem;
+}
+
+.cartao p {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}

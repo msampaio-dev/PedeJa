@@ -80,6 +80,18 @@
   font-weight: 700;
 }
 
+/* No celular o sino não fica na borda da tela, e um painel alinhado a ele
+   vazaria pela esquerda. Ali o painel ocupa a largura toda, abaixo do topo. */
+@media (max-width: 560px) {
+  .painel {
+    position: fixed;
+    top: 72px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}
+
 .vazio {
   margin: 0;
   padding: 16px;

@@ -1,0 +1,16 @@
+.aviso {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 20;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: #3e3e3e;
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}

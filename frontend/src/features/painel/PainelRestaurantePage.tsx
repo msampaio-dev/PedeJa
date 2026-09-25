@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useRef, useState } from 'react'
 import { Topo } from '../../components/Topo'
 import { ApiError } from '../../services/api'
 import { CATEGORIAS, ROTULO_CATEGORIA, formatarPreco } from '../../shared/formatadores'
@@ -32,6 +32,7 @@ export function PainelRestaurantePage() {
   const [editandoId, setEditandoId] = useState<number | null>(null)
   const [formItem, setFormItem] = useState<FormItem>(ITEM_VAZIO)
   const [erroItem, setErroItem] = useState('')
+  const formularioItem = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
     if (!token) return
@@ -86,6 +87,10 @@ export function PainelRestaurantePage() {
       preco: item.preco.toFixed(2),
       disponivel: item.disponivel,
     })
+    // No celular o formulário fica abaixo da lista, fora da tela. Sem rolar até
+    // ele, tocar em "Editar" pareceria não fazer nada.
+    formularioItem.current?.closest('section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    formularioItem.current?.querySelector('input')?.focus({ preventScroll: true })
   }
 
   function cancelarEdicao() {
@@ -156,13 +161,13 @@ export function PainelRestaurantePage() {
                       </button>
                     </li>
                   ))}
-                  {itens.length === 0 && <li>Nenhum item ainda. Cadastre o primeiro ao lado.</li>}
+                  {itens.length === 0 && <li>Nenhum item ainda. Cadastre o primeiro no formulário de novo item.</li>}
                 </ul>
               </section>
 
               <section className={styles.bloco}>
                 <h2>{editandoId ? 'Editar item' : 'Novo item'}</h2>
-                <form className={styles.formulario} onSubmit={salvarItem}>
+                <form className={styles.formulario} onSubmit={salvarItem} ref={formularioItem}>
                   {erroItem && <p className={styles.erro} role="alert">{erroItem}</p>}
                   <label>
                     Nome

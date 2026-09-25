@@ -22,7 +22,10 @@ export function Topo() {
         <nav className={styles.usuario}>
           {ehRestaurante && <Link className={styles.link} to="/restaurante/pedidos">Pedidos</Link>}
           {ehRestaurante && <Link className={styles.link} to="/restaurante">Cardápio</Link>}
-          {sessao?.perfil === 'CLIENTE' && <Link className={styles.link} to="/pedidos">Meus pedidos</Link>}
+          {sessao?.perfil === 'CLIENTE' && <Link className={styles.link} to="/pedidos">
+            <span className={styles.soDesktop}>Meus pedidos</span>
+            <span className={styles.soCelular}>Pedidos</span>
+          </Link>}
           {!ehRestaurante && (
             <Link className={styles.link} to="/sacola">
               Sacola{quantidadeTotal > 0 && <span className={styles.contador}>{quantidadeTotal}</span>}

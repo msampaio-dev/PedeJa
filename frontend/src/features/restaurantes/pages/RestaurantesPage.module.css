@@ -23,6 +23,7 @@
   margin-top: 16px;
   overflow-x: auto;
   padding-bottom: 4px;
+  scrollbar-width: none;
 }
 
 .categoria {
